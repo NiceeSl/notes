@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notesdb
+    username: postgres
+    password: 64ubamed
+    liquibase:
+      change-log: classpath:/db/changelog/db.changelog-master.yaml
