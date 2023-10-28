@@ -1,57 +1,63 @@
 package com.notes.notes;
 
-import Model.Note;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class NotesController {
 
-    private List<Note> notes = new ArrayList<>();
+    @Autowired
+    private NoteRepository noteRepository;
 
     @GetMapping("/notes")
     public List<Note> getNotes() {
-        return notes;
+        return noteRepository.findAll();
     }
 
     @GetMapping("/notes/{id}")
-    public ResponseEntity<Note> getNoteById(@PathVariable int id) {
-        for (Note note : notes) {
-            if (note.getId() == id) {
-                return ResponseEntity.ok(note);
-            }
+    public ResponseEntity<Note> getNoteById(@PathVariable Long id) {
+        Optional<Note> note = noteRepository.findById(id);
+        if (note.isPresent()) {
+            return ResponseEntity.ok(note.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/notes")
     public ResponseEntity<Note> createNote(@RequestBody Note note) {
-        int newId = notes.size() + 1;
-        note.setId(newId);
-        notes.add(note);
-        return ResponseEntity.status(HttpStatus.CREATED).body(note);
+        Note savedNote = noteRepository.save(note);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedNote);
     }
 
     @PutMapping("/notes/{id}")
-    public ResponseEntity<Note> updateNote(@PathVariable int id, @RequestBody Note updatedNote) {
-        for (int i = 0; i < notes.size(); i++) {
-            Note note = notes.get(i);
-            if (note.getId() == id) {
-                note.setTitle(updatedNote.getTitle());
-                note.setContent(updatedNote.getContent());
-                return ResponseEntity.ok(note);
-            }
+    public ResponseEntity<Note> updateNote(@PathVariable Long id, @RequestBody Note updatedNote) {
+        Optional<Note> optionalNote = noteRepository.findById(id);
+        if (optionalNote.isPresent()) {
+            Note existingNote = optionalNote.get();
+            existingNote.setTitle(updatedNote.getTitle());
+            existingNote.setContent(updatedNote.getContent());
+            noteRepository.save(existingNote);
+            return ResponseEntity.ok(existingNote);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/notes/{id}")
-    public ResponseEntity<Void> deleteNote(@PathVariable int id) {
-        notes.removeIf(note -> note.getId() == id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteNote(@PathVariable Long id) {
+        Optional<Note> optionalNote = noteRepository.findById(id);
+        if (optionalNote.isPresent()) {
+            noteRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
+
