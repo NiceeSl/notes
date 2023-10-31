@@ -1,7 +1,5 @@
 package com.notes.notes;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +9,18 @@ import java.util.List;
 @RequestMapping("/notes")
 public class NotesController {
     private final NoteService noteService;
-    private static final Logger logger = LoggerFactory.getLogger(NotesController.class);
+    private final NoteMapper noteMapper;
+
 
     @Autowired
-    public NotesController(NoteService noteService) {
+    public NotesController(NoteService noteService,NoteMapper noteMapper) {
         this.noteService = noteService;
+        this.noteMapper = noteMapper;
     }
 
     @GetMapping
     public List<NoteDto> getAllNotes() {
         List<NoteDto> notes = noteService.getAllNotes();
-        logger.info("Retrieved {} notes", notes.size());
         return notes;
     }
 
