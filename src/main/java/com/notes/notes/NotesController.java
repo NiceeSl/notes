@@ -3,25 +3,23 @@ package com.notes.notes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/notes")
 public class NotesController {
     private final NoteService noteService;
-    private final NoteMapper noteMapper;
 
 
     @Autowired
-    public NotesController(NoteService noteService,NoteMapper noteMapper) {
+    public NotesController(NoteService noteService) {
         this.noteService = noteService;
-        this.noteMapper = noteMapper;
     }
 
     @GetMapping
     public List<NoteDto> getAllNotes() {
-        List<NoteDto> notes = noteService.getAllNotes();
-        return notes;
+        return noteService.getAllNotes();
     }
 
 

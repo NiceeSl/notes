@@ -20,19 +20,19 @@ public class NoteService {
     public List<NoteDto> getAllNotes() {
         List<NoteEntity> noteEntities = noteRepository.findAll();
         return noteEntities.stream()
-                .map(noteMapper::entityToDto)
+                .map(noteMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public NoteDto getNoteById(Long id) {
         NoteEntity noteEntity = noteRepository.findById(id).orElse(null);
-        return (noteEntity != null) ? noteMapper.entityToDto(noteEntity) : null;
+        return (noteEntity != null) ? noteMapper.toDto(noteEntity) : null;
     }
 
     public NoteDto createNote(NoteDto noteDto) {
-        NoteEntity noteEntity = noteMapper.dtoToEntity(noteDto);
+        NoteEntity noteEntity = noteMapper.toEntity(noteDto);
         NoteEntity createdNoteEntity = noteRepository.save(noteEntity);
-        return noteMapper.entityToDto(createdNoteEntity);
+        return noteMapper.toDto(createdNoteEntity);
     }
 
     public NoteDto updateNote(Long id, NoteDto noteDto) {
@@ -42,7 +42,7 @@ public class NoteService {
             existingNoteEntity.setContent(noteDto.getContent());
 
             NoteEntity updatedNoteEntity = noteRepository.save(existingNoteEntity);
-            return noteMapper.entityToDto(updatedNoteEntity);
+            return noteMapper.toDto(updatedNoteEntity);
         } else {
             return null;
         }
