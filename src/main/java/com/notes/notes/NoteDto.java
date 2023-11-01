@@ -5,6 +5,15 @@ public class NoteDto {
     private String title;
     private String content;
 
+    public NoteDto() {
+    }
+
+    public NoteDto(Long id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }

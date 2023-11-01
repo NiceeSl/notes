@@ -13,7 +13,14 @@ public class NoteEntity {
     @Column(name = "content")
     private String content;
 
-    public NoteEntity(){}
+    public NoteEntity() {
+    }
+
+    public NoteEntity(Long id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+    }
 
     public Long getId() {
         return id;

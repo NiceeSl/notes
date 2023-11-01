@@ -1,5 +1,6 @@
 package com.notes.notes;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +30,17 @@ public class NoteService {
         return (noteEntity != null) ? noteMapper.toDto(noteEntity) : null;
     }
 
-    public NoteDto createNote(NoteDto noteDto) {
+    public NoteDto createNote(NoteDto noteDto) throws NotFoundException {
         NoteEntity noteEntity = noteMapper.toEntity(noteDto);
         NoteEntity createdNoteEntity = noteRepository.save(noteEntity);
-        return noteMapper.toDto(createdNoteEntity);
+        if (createdNoteEntity != null) {
+            return noteMapper.toDto(createdNoteEntity);
+        } else {
+            throw new NotFoundException("Failed to create note");
+        }
     }
 
-    public NoteDto updateNote(Long id, NoteDto noteDto) {
+    public NoteDto updateNote(Long id, NoteDto noteDto) throws NotFoundException {
         NoteEntity existingNoteEntity = noteRepository.findById(id).orElse(null);
         if (existingNoteEntity != null) {
             existingNoteEntity.setTitle(noteDto.getTitle());
@@ -44,7 +49,7 @@ public class NoteService {
             NoteEntity updatedNoteEntity = noteRepository.save(existingNoteEntity);
             return noteMapper.toDto(updatedNoteEntity);
         } else {
-            return null;
+            throw new NotFoundException("Note with id " + id + " not found");
         }
     }
 

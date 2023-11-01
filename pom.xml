@@ -14,7 +14,7 @@
     <name>notes</name>
     <description>notes</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.18</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -61,6 +61,24 @@
             <version>1.5.5.Final</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.12.2</version> <!-- Используйте актуальную версию Byte Buddy -->
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -69,8 +87,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>9</source>
+                    <target>9</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
