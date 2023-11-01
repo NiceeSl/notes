@@ -31,13 +31,8 @@ public class NoteService {
     }
 
     public NoteDto createNote(NoteDto noteDto) throws NotFoundException {
-        NoteEntity noteEntity = noteMapper.toEntity(noteDto);
-        NoteEntity createdNoteEntity = noteRepository.save(noteEntity);
-        if (createdNoteEntity != null) {
-            return noteMapper.toDto(createdNoteEntity);
-        } else {
-            throw new NotFoundException("Failed to create note");
-        }
+        NoteEntity noteEntity = noteRepository.save(noteMapper.toEntity(noteDto));
+        return noteMapper.toDto(noteEntity);
     }
 
     public NoteDto updateNote(Long id, NoteDto noteDto) throws NotFoundException {

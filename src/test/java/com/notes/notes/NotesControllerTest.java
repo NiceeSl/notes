@@ -3,21 +3,22 @@ package com.notes.notes;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class NotesControllerTest {
 
     @Mock
@@ -25,11 +26,6 @@ public class NotesControllerTest {
 
     @InjectMocks
     private NotesController notesController;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testGetAllNotes() {
@@ -51,7 +47,7 @@ public class NotesControllerTest {
     }
 
     @Test
-    public void testGetNoteById_WhenNoteExists() {
+    public void testGetNoteById_WhenNoteExists() throws NotFoundException {
         // Подготовка данных для теста
         Long noteId = 1L;
         NoteDto mockNote = new NoteDto();
@@ -71,7 +67,7 @@ public class NotesControllerTest {
     }
 
     @Test
-    public void testGetNoteById_WhenNoteDoesNotExist() {
+    public void testGetNoteById_WhenNoteDoesNotExist() throws NotFoundException {
         // Подготовка данных для теста
         Long noteId = 1L;
         when(noteService.getNoteById(noteId)).thenReturn(null);

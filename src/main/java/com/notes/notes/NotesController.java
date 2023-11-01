@@ -25,7 +25,7 @@ public class NotesController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<NoteDto> getNoteById(@PathVariable Long id) {
+    public ResponseEntity<NoteDto> getNoteById(@PathVariable Long id) throws NotFoundException {
         NoteDto noteDto = noteService.getNoteById(id);
         if (noteDto != null) {
             return ResponseEntity.ok(noteDto);

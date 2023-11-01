@@ -3,8 +3,11 @@ package com.notes.notes;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +16,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class NoteServiceTest {
 
+    @InjectMocks
     private NoteService noteService;
 
     @Mock
@@ -22,12 +27,6 @@ public class NoteServiceTest {
 
     @Mock
     private NoteMapper noteMapper;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        noteService = new NoteService(noteRepository, noteMapper);
-    }
 
     @Test
     void testGetAllNotes() {
@@ -78,37 +77,14 @@ public class NoteServiceTest {
     }
 
     @Test
-    void testCreateNote() {
-        NoteDto newNoteDto = new NoteDto(null, "Новый заголовок", "Новое содержание");
-
-        NoteEntity newNoteEntity = new NoteEntity(null, "Новый заголовок", "Новое содержание");
-
-        when(noteMapper.toEntity(newNoteDto)).thenReturn(newNoteEntity);
-
-        // Устанавливаем, что noteRepository.save вернет null
-        when(noteRepository.save(newNoteEntity)).thenReturn(null);
-
-        // Ожидаем, что будет брошено исключение NotFoundException
-        assertThrows(NotFoundException.class, () -> noteService.createNote(newNoteDto));
-
-        verify(noteMapper, times(1)).toEntity(newNoteDto);
-        verify(noteRepository, times(1)).save(newNoteEntity);
-    }
-
-    @Test
     void testUpdateNote() {
         Long id = 1L;
         NoteDto updatedNoteDto = new NoteDto(id, "Обновленный заголовок", "Обновленное содержание");
 
-        // Не имитируем возвращение существующей записи
-
-        // Ожидаем, что при вызове noteService.updateNote произойдет исключение NotFoundException
         assertThrows(NotFoundException.class, () -> noteService.updateNote(id, updatedNoteDto));
 
-        // Проверяем, что метод findById вызывался 1 раз с указанным id
         verify(noteRepository, times(1)).findById(id);
 
-        // Убеждаемся, что метод save не был вызван
         verify(noteRepository, never()).save(any());
     }
 
