@@ -78,7 +78,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    void testCreateNote() throws NotFoundException {
+    void testCreateNote() {
         NoteDto newNoteDto = new NoteDto(null, "Новый заголовок", "Новое содержание");
 
         NoteEntity newNoteEntity = new NoteEntity(null, "Новый заголовок", "Новое содержание");
@@ -89,15 +89,13 @@ public class NoteServiceTest {
         when(noteRepository.save(newNoteEntity)).thenReturn(null);
 
         // Ожидаем, что будет брошено исключение NotFoundException
-        assertThrows(NotFoundException.class, () -> {
-            noteService.createNote(newNoteDto);
-        });
+        assertThrows(NotFoundException.class, () -> noteService.createNote(newNoteDto));
 
         verify(noteMapper, times(1)).toEntity(newNoteDto);
         verify(noteRepository, times(1)).save(newNoteEntity);
     }
 
-
+    @Test
     void testUpdateNote() {
         Long id = 1L;
         NoteDto updatedNoteDto = new NoteDto(id, "Обновленный заголовок", "Обновленное содержание");
@@ -105,9 +103,7 @@ public class NoteServiceTest {
         // Не имитируем возвращение существующей записи
 
         // Ожидаем, что при вызове noteService.updateNote произойдет исключение NotFoundException
-        assertThrows(NotFoundException.class, () -> {
-            noteService.updateNote(id, updatedNoteDto);
-        });
+        assertThrows(NotFoundException.class, () -> noteService.updateNote(id, updatedNoteDto));
 
         // Проверяем, что метод findById вызывался 1 раз с указанным id
         verify(noteRepository, times(1)).findById(id);
@@ -123,9 +119,7 @@ public class NoteServiceTest {
 
         when(noteRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> {
-            noteService.updateNote(id, updatedNoteDto);
-        });
+        assertThrows(NotFoundException.class, () -> noteService.updateNote(id, updatedNoteDto));
 
         verify(noteRepository, times(1)).findById(id);
         verify(noteRepository, never()).save(any());
