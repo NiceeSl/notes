@@ -3,7 +3,6 @@ package com.notes.notes;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class NotesControllerTest extends AbstractSpringBootTest {
 
     @MockBean
@@ -40,20 +38,26 @@ public class NotesControllerTest extends AbstractSpringBootTest {
     public void testGetAllNotes() throws Exception {
         ResponseEntity<String> response = testRestTemplate.getForEntity("/notes", String.class);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
 
         List<NoteDto> notes = objectMapper.readValue(
                 response.getBody(),
-                new TypeReference<List<NoteDto>>(){}
+                new TypeReference<>() {}
         );
 
         assertEquals(2, notes.size());
-        notes.forEach(note -> {
-            assertNotNull(note.getId());
-            assertNotNull(note.getTitle());
-            assertNotNull(note.getContent());
-        });
+
+        NoteDto firstNote = notes.get(0);
+        assertEquals(1L, firstNote.getId());
+        assertEquals("Sample Title 1", firstNote.getTitle());
+        assertEquals("Sample Content 1", firstNote.getContent());
+
+        NoteDto secondNote = notes.get(1);
+        assertEquals(2L, secondNote.getId());
+        assertEquals("Sample Title 2", secondNote.getTitle());
+        assertEquals("Sample Content 2", secondNote.getContent());
     }
+
 
     @Test
     public void testGetNoteById_WhenNoteExists() throws Exception {

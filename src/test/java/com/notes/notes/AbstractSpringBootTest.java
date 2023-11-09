@@ -11,5 +11,6 @@ public abstract class AbstractSpringBootTest {
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    protected ObjectMapper objectMapper;
 }
