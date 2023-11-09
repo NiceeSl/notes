@@ -2,6 +2,7 @@ package com.notes.notes;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,7 @@ public class NotesController {
     @PostMapping
     public ResponseEntity<NoteDto> createNote(@RequestBody NoteDto noteDto) throws NotFoundException {
         NoteDto createdNoteDto = noteService.createNote(noteDto);
-        return ResponseEntity.ok(createdNoteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdNoteDto);
     }
 
     @PutMapping("/{id}")

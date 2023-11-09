@@ -1,5 +1,6 @@
 package com.notes.notes;
 
+//lombok
 public class NoteDto {
     private Long id;
     private String title;
