@@ -12,13 +12,11 @@ import java.util.List;
 @RequestMapping("/notes")
 public class NotesController {
     private final NoteService noteService;
-    private final MessageSenderService messageSenderService;
 
     @Autowired
-    public NotesController(NoteService noteService, MessageSenderService messageSenderService) {
+    public NotesController(NoteService noteService) {
 
         this.noteService = noteService;
-        this.messageSenderService = messageSenderService;
     }
 
     @GetMapping
@@ -40,14 +38,12 @@ public class NotesController {
     @PostMapping
     public ResponseEntity<NoteDto> createNote(@RequestBody NoteDto noteDto) throws NotFoundException {
         NoteDto createdNoteDto = noteService.createNote(noteDto);
-        messageSenderService.sendMessage("note-events", "Note created: " + noteDto.getTitle());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNoteDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<NoteDto> updateNote(@PathVariable Long id, @RequestBody NoteDto noteDto) throws NotFoundException {
         NoteDto updatedNoteDto = noteService.updateNote(id, noteDto);
-        messageSenderService.sendMessage("note-events", "Note updated: " + noteDto.getTitle());
         if (updatedNoteDto != null) {
             return ResponseEntity.ok(updatedNoteDto);
         } else {
@@ -58,7 +54,6 @@ public class NotesController {
     @DeleteMapping("/{id}")
     public void deleteNote(@PathVariable Long id) {
         noteService.deleteNoteById(id);
-        messageSenderService.sendMessage("note-events", "Note deleted: id=" + id);
     }
 
 }

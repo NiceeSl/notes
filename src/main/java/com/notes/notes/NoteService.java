@@ -2,6 +2,7 @@ package com.notes.notes;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,11 +12,14 @@ import java.util.stream.Collectors;
 public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteMapper noteMapper;
+    private final NoteEventPublisher publisher;
+
 
     @Autowired
-    public NoteService(NoteRepository noteRepository, NoteMapper noteMapper) {
+    public NoteService(NoteRepository noteRepository, NoteMapper noteMapper, NoteEventPublisher publisher) {
         this.noteRepository = noteRepository;
         this.noteMapper = noteMapper;
+        this.publisher = publisher;
     }
 
     public List<NoteDto> getAllNotes() {
@@ -32,6 +36,7 @@ public class NoteService {
 
     public NoteDto createNote(NoteDto noteDto) throws NotFoundException {
         NoteEntity noteEntity = noteRepository.save(noteMapper.toEntity(noteDto));
+        publisher.send(new NoteEventDto(EventType.CREATED, noteEntity.getId()));
         return noteMapper.toDto(noteEntity);
     }
 
