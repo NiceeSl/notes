@@ -19,8 +19,11 @@ public class NoteEventPublisher {
     }
 
 
-    public void send(NoteEventDto eventDto) {
+    public void send(NoteEventDto eventDto, NoteEventPayloadDto payload) {
         try {
+            if (payload != null) {
+                eventDto.setPayload(payload);
+            }
             String data = mapper.writeValueAsString(eventDto);
             kafkaTemplate.send("note-events", data);
             System.out.println(data);

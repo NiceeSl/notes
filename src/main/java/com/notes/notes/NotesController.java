@@ -52,7 +52,7 @@ public class NotesController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteNote(@PathVariable Long id) {
+    public void deleteNote(@PathVariable Long id) throws NotFoundException {
         noteService.deleteNoteById(id);
     }
 

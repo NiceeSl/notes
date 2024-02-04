@@ -2,7 +2,6 @@ package com.notes.notes;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,24 +35,34 @@ public class NoteService {
 
     public NoteDto createNote(NoteDto noteDto) throws NotFoundException {
         NoteEntity noteEntity = noteRepository.save(noteMapper.toEntity(noteDto));
-        publisher.send(new NoteEventDto(EventType.CREATED, noteEntity.getId()));
+        NoteEventPayloadDto payload = new NoteEventPayloadDto(noteDto.getTitle(), noteDto.getContent());
+        publisher.send(new NoteEventDto(EventType.CREATED, noteEntity.getId()), payload);
         return noteMapper.toDto(noteEntity);
     }
 
     public NoteDto updateNote(Long id, NoteDto noteDto) throws NotFoundException {
-        NoteEntity existingNoteEntity = noteRepository.findById(id).orElse(null);
-        if (existingNoteEntity != null) {
-            existingNoteEntity.setTitle(noteDto.getTitle());
-            existingNoteEntity.setContent(noteDto.getContent());
+        NoteEntity noteEntity = noteRepository.findById(id).orElse(null);
+        NoteEventPayloadDto payload = new NoteEventPayloadDto(noteDto.getTitle(), noteDto.getContent());
+        if (noteEntity != null) {
+            noteEntity.setTitle(noteDto.getTitle());
+            noteEntity.setContent(noteDto.getContent());
 
-            NoteEntity updatedNoteEntity = noteRepository.save(existingNoteEntity);
+            NoteEntity updatedNoteEntity = noteRepository.save(noteEntity);
+            publisher.send(new NoteEventDto(EventType.UPDATED, noteEntity.getId()), payload);
             return noteMapper.toDto(updatedNoteEntity);
         } else {
             throw new NotFoundException("Note with id " + id + " not found");
         }
     }
 
-    public void deleteNoteById(Long id) {
-        noteRepository.deleteById(id);
+    public void deleteNoteById(Long id) throws NotFoundException{
+        NoteEntity noteEntity = noteRepository.findById(id).orElse(null);
+        if(noteEntity != null) {
+            publisher.send(new NoteEventDto(EventType.DELETED, noteEntity.getId()), null);
+            noteRepository.deleteById(id);
+        }
+        else {
+            throw new NotFoundException("Note with id " + id + " not found");
+        }
     }
 }
