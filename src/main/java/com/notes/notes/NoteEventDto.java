@@ -26,4 +26,5 @@ public class NoteEventDto {
     public void setPayload(NoteEventPayloadDto payload) {
         this.payload = payload;
     }
+
 }
