@@ -13,7 +13,7 @@ public class NoteEventConsumer {
         this.objectMapper = objectMapper;
     }
 
-    @KafkaListener(topics = "note-events")
+    @KafkaListener(topics = "note-events", groupId = "notes-group")
     public void listen(String message) {
         try {
             NoteEventDto noteEventDto = objectMapper.readValue(message, NoteEventDto.class);

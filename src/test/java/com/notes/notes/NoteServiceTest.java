@@ -102,7 +102,7 @@ public class NoteServiceTest {
     }
 
     @Test
-    void testDeleteNoteById() {
+    void testDeleteNoteById() throws NotFoundException {
         Long id = 1L;
 
         noteService.deleteNoteById(id);
