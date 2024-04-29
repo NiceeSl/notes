@@ -8,7 +8,7 @@ I am a Java Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW
 
 - :telescope: I’m working as a Software Engineer and contributing to backend for building web applications.
 
-- :seedling: Exploring Technical Content Writing.
+- :seedling: I study new content on the Internet and also on Git itself.
 ### :hammer_and_wrench: Languages and Tools :
 <div>
   <img src="https://github.com/devicons/devicon/blob/master/icons/java/java-original-wordmark.svg" title="Java" alt="Java" width="40" height="40"/>&nbsp;
